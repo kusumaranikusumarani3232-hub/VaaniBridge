@@ -46,6 +46,18 @@ class TestHealthCheck:
             assert response.status_code == 200
             assert response.json()["api_key_configured"] is False
 
+    def test_cors_allows_vercel_origin(self):
+        response = client.options(
+            "/api/token",
+            headers={
+                "Origin": "https://vaanibridge.vercel.app",
+                "Access-Control-Request-Method": "POST",
+            },
+        )
+        assert response.status_code == 200
+        assert response.headers.get("access-control-allow-origin") == "https://vaanibridge.vercel.app"
+
+
 
 # ─────────────────────────────────────────────
 # Token generation

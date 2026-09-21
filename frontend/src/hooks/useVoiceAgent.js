@@ -16,7 +16,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
 const SAMPLE_RATE = 24000; // AssemblyAI Voice Agent requires 24 kHz
 const PCM_WORKLET_URL = "/worklets/pcm-processor.js";
 
