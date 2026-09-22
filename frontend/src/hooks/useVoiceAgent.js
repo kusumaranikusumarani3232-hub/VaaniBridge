@@ -16,7 +16,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const BACKEND_URL = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
+const getBackendUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL.replace(/\/$/, "");
+  }
+  // Local development only uses localhost:8000
+  if (import.meta.env.DEV) {
+    return "http://localhost:8000";
+  }
+  // Safe production fallback when VITE_API_URL is not set at build time
+  return "https://vaanibridge.onrender.com";
+};
+
+const BACKEND_URL = getBackendUrl();
 const SAMPLE_RATE = 24000; // AssemblyAI Voice Agent requires 24 kHz
 const PCM_WORKLET_URL = "/worklets/pcm-processor.js";
 
@@ -235,7 +247,9 @@ export function useVoiceAgent() {
 
     try {
       // 1. Fetch temporary token from backend
-      const tokenRes = await fetch(`${BACKEND_URL}/api/token`, {
+      const tokenEndpoint = `${BACKEND_URL}/api/token`;
+      console.log("[VaaniBridge] Requesting token from:", tokenEndpoint);
+      const tokenRes = await fetch(tokenEndpoint, {
         method: "POST",
       });
 

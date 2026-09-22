@@ -31,15 +31,20 @@ allowed_origins = [
     "http://127.0.0.1:5173",
     "http://127.0.0.1:5174",
     "http://localhost:3000",
+    "https://vaanibridge.vercel.app",
+    "https://vaani-bridge.vercel.app",
 ]
 
-# Add origins from ALLOWED_ORIGINS environment variable if present (comma-separated)
+# Add origins from ALLOWED_ORIGINS environment variable if present (comma-separated or '*')
 env_origins = os.environ.get("ALLOWED_ORIGINS", "").strip()
 if env_origins:
-    for origin in env_origins.split(","):
-        cleaned = origin.strip()
-        if cleaned and cleaned not in allowed_origins:
-            allowed_origins.append(cleaned)
+    if env_origins == "*":
+        allowed_origins = ["*"]
+    else:
+        for origin in env_origins.split(","):
+            cleaned = origin.strip()
+            if cleaned and cleaned not in allowed_origins:
+                allowed_origins.append(cleaned)
 
 app.add_middleware(
     CORSMiddleware,
